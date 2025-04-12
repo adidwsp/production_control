@@ -9,7 +9,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 interface ProductionData {
   no: number;
   partNo: string;
-  JobNo: string;
+  jobNo: string;
   status: string;
   plan: number;
   actual: number;
@@ -57,7 +57,7 @@ const defaultColDef = {
 const colDefs = ref([
   { field: "no", flex: 1},
   { field: "partNo", filter: true, flex: 3 },
-  { field: "JobNo", filter: true, flex: 3 },
+  { field: "jobNo", filter: true, flex: 3 },
   { 
     field: "status",
     editable: true,
