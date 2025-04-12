@@ -82,13 +82,6 @@ const isViewMode = computed(() => props.mode === 'view');
         <span v-if="mode === 'edit'">Edit Production Sheet</span>
         <span v-else-if="mode === 'view'">View Production Sheet</span>
         <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          label="Search"
-          prepend-inner-icon="$magnify"
-          variant="outlined"
-          hide-details
-        ></v-text-field>
       </v-card-title>
     <!-- AG Grid dengan defaultColDef -->
     <AgGridVue
