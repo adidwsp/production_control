@@ -1,0 +1,65 @@
+//Register
+POST http://localhost:8080/api/register
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin",
+  "pass_confirm": "admin"
+}
+
+###
+
+//Login
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+###
+
+//Logout
+GET http://localhost:8080/api/logout
+
+
+//Show Partlist
+###
+GET http://localhost:8080/api/partlists
+
+###
+
+//Create Partlist
+POST http://localhost:8080/api/partlists
+Content-Type: application/json
+
+{
+  "part_no": "64900-I6000",
+  "part_name": "COWL",
+  "part_status": "FP"
+}
+
+
+###
+
+//Update Partlist
+GET http://localhost:8080/api/partlists/66700-I7000
+
+###
+
+//Update Partlist
+PUT http://localhost:8080/api/partlists/66700-I7000
+Content-Type: application/json
+
+{
+  "part_no": "66700-I7000",
+  "part_name": "COWL",
+  "part_status": "FP"
+}
+
+###
+
+//Delete Partlist
+DELETE http://localhost:8080/api/partlists/64900-I6000
