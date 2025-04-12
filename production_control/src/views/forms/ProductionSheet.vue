@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import { ref, computed, defineProps, defineEmits } from 'vue';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import { AgGridVue } from "ag-grid-vue3";
+
+// Register all Community features
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface ProductionData {
-  id: number;
-  product: string;
-  quantity: number;
+  no: number;
+  partNo: string;
+  jobNo: string;
   status: string;
+  plan: number;
+  actual: number;
+  remarks?: string;
 }
 
 // Mendefinisikan props untuk menerima mode: 'edit' atau 'view'
@@ -14,103 +22,52 @@ const props = defineProps<{ mode: 'edit' | 'view' }>();
 const emit = defineEmits(['close']);
 
 // Data sample untuk tabel produksi
-const productionItems = ref<ProductionData[]>([
-  { id: 1, product: 'Product A', quantity: 10, status: 'In Progress' },
-  { id: 2, product: 'Product B', quantity: 20, status: 'Complete' },
-  { id: 3, product: 'Product C', quantity: 15, status: 'In Progress' },
+const rowData = ref<ProductionData[]>([
+  { no: 1, partNo: 'Product A', jobNo: 'P001', status: 'FP', plan: 10, actual: 10 },
+  { no: 2, partNo: 'Product B', jobNo: 'P002', status: 'FP', plan: 20, actual: 10, remarks: 'Problem machine' },
+  { no: 3, partNo: 'Product C', jobNo: 'P003', status: 'FP', plan: 10, actual: 30 },
+  { no: 4, partNo: 'Product D', jobNo: 'P003', status: 'FP', plan: 50, actual: 50 },
+  { no: 5, partNo: 'Product F', jobNo: 'P004', status: 'WIP', plan: 120, actual: 100 },
 ]);
 
-// State lokal untuk input form
-const productionId = ref('');
-const productionDate = ref('');
+// Default column definition: tidak bisa di-resize secara default
+const defaultColDef = {
+  resizable: false,
+  cellStyle: { textAlign: 'center'},
+};
+
+// Definisi kolom (bisa menimpa jika perlu)
+const colDefs = ref([
+  { field: "no", maxWidth: 60, flex: 1 },
+  { field: "partNo", flex: 3 },
+  { field: "jobNo", flex: 3 },
+  { 
+    field: "status",
+    flex: 1 ,
+    editable: true,
+    cellEditor: 'agSelectCellEditor',
+    cellEditorParams: {
+      values: ['FP', 'WIP'],
+    },
+  },
+  { field: "plan", maxWidth: 100, flex: 1  },
+  { field: "actual", maxWidth: 100 , editable: true, flex: 1  },
+  { field: "remarks", editable: true, flex: 4  },
+]);
 
 // Computed property untuk menentukan apakah mode view
 const isViewMode = computed(() => props.mode === 'view');
-
-// Method untuk menambahkan data baru ke tabel
-const addItem = () => {
-  productionItems.value.push({
-    id: productionItems.value.length + 1,
-    product: 'New Product',
-    quantity: 0,
-    status: 'In Progress'
-  });
-};
-
-// Method untuk menyimpan data (contoh implementasi)
-const save = () => {
-  console.log('Saved Production Sheet:', {
-    productionId: productionId.value,
-    productionDate: productionDate.value,
-    items: productionItems.value,
-  });
-  // Lakukan logic penyimpanan data sesuai kebutuhan
-};
 </script>
 
 <template>
   <v-card>
-    <v-card-title>
-      <span class="headline">Production Sheet - {{ isViewMode ? 'View' : 'Edit' }}</span>
-    </v-card-title>
-    <v-card-text>
-      <!-- Form untuk input data produksi -->
-      <v-form>
-        <v-container>
-          <v-row>
-            <v-col cols="12" md="6">
-              <v-text-field 
-                label="Production ID" 
-                v-model="productionId" 
-                :disabled="isViewMode" />
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field 
-                label="Production Date" 
-                v-model="productionDate" 
-                :disabled="isViewMode" />
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-form>
-
-      <!-- Tabel untuk data produksi -->
-      <v-data-table
-        :headers="[
-          { title: 'ID', value: 'id' },
-          { title: 'Product', value: 'product' },
-          { title: 'Quantity', value: 'quantity' },
-          { title: 'Status', value: 'status' }
-        ]"
-        :items="productionItems"
-        class="mt-4"
-      >
-        <!-- Toolbar pada bagian atas tabel -->
-        <template #top>
-          <v-toolbar flat>
-            <v-toolbar-title>Production Details</v-toolbar-title>
-            <v-divider class="mx-4" inset vertical></v-divider>
-            <v-spacer></v-spacer>
-            <!-- Tampilkan tombol tambah jika dalam mode edit -->
-            <v-btn v-if="!isViewMode" color="primary" @click="addItem">Add Item</v-btn>
-          </v-toolbar>
-        </template>
-
-        <!-- Slot untuk menampilkan status dengan chip -->
-        <template #item.status="{ item }">
-          <v-chip :color="item.status === 'Complete' ? 'green' : 'blue'" dark>
-            {{ item.status }}
-          </v-chip>
-        </template>
-      </v-data-table>
-    </v-card-text>
-
-    <!-- Footer Dialog -->
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn variant="text" color="primary" @click="$emit('close')">Close</v-btn>
-      <v-btn v-if="!isViewMode" color="primary" @click="save">Save</v-btn>
-    </v-card-actions>
+    <!-- AG Grid dengan defaultColDef -->
+    <AgGridVue
+      :rowData="rowData"
+      :columnDefs="colDefs"
+      :defaultColDef="defaultColDef"
+      style="height: 500px">
+    </AgGridVue>
   </v-card>
 </template>
 

@@ -18,7 +18,7 @@ const footerLink = shallowRef([
 </script>
 <template>
   <v-footer class="px-0 footer mt-2">
-    <v-row justify="end" align="right" no-gutters>
+    <v-row justify="end" align="end" no-gutters>
       <v-col class="text-sm-right text-center" cols="2" sm="6">
         <a
           v-for="(item, i) in footerLink"

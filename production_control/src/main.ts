@@ -10,6 +10,14 @@ import VueTablerIcons from 'vue-tabler-icons';
 
 import { fakeBackend } from '@/utils/helpers/fake-backend';
 
+
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import { AgGridVue } from "ag-grid-vue3";
+
+// Register all Community features
+ModuleRegistry.registerModules([AllCommunityModule]);
+
+
 // print
 import print from 'vue3-print-nb';
 
