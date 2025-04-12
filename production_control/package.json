@@ -17,7 +17,6 @@
     "@mdi/js": "^7.4.47",
     "@tsconfig/node22": "^22.0.0",
     "@typescript-eslint/parser": "^8.19.0",
-    "ag-grid-vue3": "^33.2.3",
     "apexcharts": "4.3.0",
     "axios": "1.7.9",
     "axios-mock-adapter": "2.1.0",
@@ -41,6 +40,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@mdi/font": "^7.4.47",
     "@types/chance": "1.1.6",
     "@types/node": "22.10.4",
     "@vitejs/plugin-vue": "5.2.1",

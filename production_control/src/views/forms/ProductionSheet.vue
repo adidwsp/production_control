@@ -1,78 +1,186 @@
-<script setup lang="ts">
-import { ref, computed, defineProps, defineEmits } from 'vue';
-import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
-import { AgGridVue } from "ag-grid-vue3";
+<script setup>
+import { ref, computed, watch } from 'vue'
+import { useDisplay } from 'vuetify'
 
-// Register all Community features
-ModuleRegistry.registerModules([AllCommunityModule]);
+const props = defineProps({ mode: String })
 
-interface ProductionData {
-  no: number;
-  partNo: string;
-  jobNo: string;
-  status: string;
-  plan: number;
-  actual: number;
-  remarks?: string;
+const search = ref('')
+const headers = [
+  { title: 'No', key: 'no' },
+  { title: 'Part No.', key: 'part_no' },
+  { title: 'Job No.', key: 'job_no' },
+  { title: 'Status', key: 'status' },
+  { title: 'Plan', key: 'plan' },
+  { title: 'Actual', key: 'actual' },
+  { title: 'Remarks', key: 'remarks' },
+]
+
+const items = ref([
+  { no: 1, part_no: 'Product A', job_no: 'P001', status: 'FP', plan: 10, actual: 10, remarks: '' },
+  { no: 2, part_no: 'Product B', job_no: 'P002', status: 'FP', plan: 20, actual: 10, remarks: 'Problem' },
+  { no: 3, part_no: 'Product C', job_no: 'P003', status: 'FP', plan: 10, actual: 30, remarks: '' },
+  { no: 4, part_no: 'Product D', job_no: 'P004', status: 'FP', plan: 50, actual: 50, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 5, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+  { no: 10, part_no: 'Product F', job_no: 'P005', status: 'WIP', plan: 120, actual: 100, remarks: '' },
+])
+
+
+const filteredItems = computed(() =>
+  items.value.filter(item =>
+    Object.values(item).some(val =>
+      String(val).toLowerCase().includes(search.value.toLowerCase())
+    )
+  )
+)
+
+function startEditing(row, col) {
+  if (props.mode !== 'edit') return
+  focusedRow.value = row
+  focusedCol.value = col
+  editingCell.value = { row, col }
 }
 
-// Mendefinisikan props untuk menerima mode: 'edit' atau 'view'
-const props = defineProps<{ mode: 'edit' | 'view' }>();
-// Emitting event (misalnya untuk menutup dialog)
-const emit = defineEmits(['close']);
+const focusedRow = ref(null)
+const focusedCol = ref(null)
+const editingCell = ref({ row: null, col: null })
 
-// Data sample untuk tabel produksi
-const rowData = ref<ProductionData[]>([
-  { no: 1, partNo: 'Product A', jobNo: 'P001', status: 'FP', plan: 10, actual: 10 },
-  { no: 2, partNo: 'Product B', jobNo: 'P002', status: 'FP', plan: 20, actual: 10, remarks: 'Problem machine' },
-  { no: 3, partNo: 'Product C', jobNo: 'P003', status: 'FP', plan: 10, actual: 30 },
-  { no: 4, partNo: 'Product D', jobNo: 'P003', status: 'FP', plan: 50, actual: 50 },
-  { no: 5, partNo: 'Product F', jobNo: 'P004', status: 'WIP', plan: 120, actual: 100 },
-]);
+function isFocused(row, col) {
+  return focusedRow.value === row && focusedCol.value === col
+}
 
-// Default column definition: tidak bisa di-resize secara default
-const defaultColDef = {
-  resizable: false,
-  cellStyle: { textAlign: 'center'},
-};
+function isEditing(row, col) {
+  return props.mode === 'edit' && editingCell.value.row === row && editingCell.value.col === col
+}
 
-// Definisi kolom (bisa menimpa jika perlu)
-const colDefs = ref([
-  { field: "no", maxWidth: 60, flex: 1 },
-  { field: "partNo", flex: 3 },
-  { field: "jobNo", flex: 3 },
-  { 
-    field: "status",
-    flex: 1 ,
-    editable: true,
-    cellEditor: 'agSelectCellEditor',
-    cellEditorParams: {
-      values: ['FP', 'WIP'],
-    },
-  },
-  { field: "plan", maxWidth: 100, flex: 1  },
-  { field: "actual", maxWidth: 100 , editable: true, flex: 1  },
-  { field: "remarks", editable: true, flex: 4  },
-]);
+function focusCell(row, col) {
+  if (props.mode !== 'edit') return
+  focusedRow.value = row
+  focusedCol.value = col
+  editingCell.value = { row: null, col: null }
+}
 
-// Computed property untuk menentukan apakah mode view
-const isViewMode = computed(() => props.mode === 'view');
+function editFocusedCell() {
+  if (props.mode !== 'edit') return
+  editingCell.value = { row: focusedRow.value, col: focusedCol.value }
+}
+
+function stopEditing() {
+  editingCell.value = { row: null, col: null }
+}
+
+function moveFocus(direction) {
+  if (props.mode !== 'edit') return
+  const colIndex = headers.findIndex(h => h.key === focusedCol.value)
+  if (direction === 'right') {
+    const nextCol = headers[colIndex + 1]?.key
+    if (nextCol) focusedCol.value = nextCol
+  } else if (direction === 'left') {
+    const nextCol = headers[colIndex - 1]?.key
+    if (nextCol) focusedCol.value = nextCol
+  } else if (direction === 'down') {
+    if (focusedRow.value < items.value.length - 1) focusedRow.value++
+  }
+}
 </script>
 
 <template>
-  <v-card>
-    <!-- AG Grid dengan defaultColDef -->
-    <AgGridVue
-      :rowData="rowData"
-      :columnDefs="colDefs"
-      :defaultColDef="defaultColDef"
-      style="height: 500px">
-    </AgGridVue>
-  </v-card>
+  <div>
+    <v-card flat>
+      <v-card-title class="d-flex justify-space-between align-center">
+        <span v-if="mode === 'edit'">Edit Production Sheet</span>
+        <span v-else-if="mode === 'view'">View Production Sheet</span>
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          label="Search"
+          prepend-inner-icon="$magnify"
+          variant="outlined"
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+
+      <v-data-table
+        :headers="headers"
+        :items="filteredItems"
+        item-value="id"
+        class="editable-table"
+        hide-default-footer
+        density="comfortable"
+        @keydown.tab.prevent="moveFocus('right')"
+        @keydown.shift.tab.prevent="moveFocus('left')"
+        @keydown.enter.prevent="moveFocus('down')"
+        @keydown.f2.prevent="editFocusedCell"
+      >
+        <template v-slot:item="{ item, index }">
+          <tr
+            :class="{ 'focused-row': focusedRow === index }"
+            @click="focusedRow = index"
+          >
+          <td
+            v-for="(header, colIndex) in headers"
+            :key="header.key"
+            @click="focusCell(index, header.key)"
+            @dblclick="startEditing(index, header.key)"
+          >
+              <template v-if="isEditing(index, header.key)">
+                <v-text-field
+                  v-model="items[index][header.key]"
+                  dense
+                  variant="outlined"
+                  hide-details
+                  autofocus
+                  @blur="stopEditing"
+                />
+              </template>
+              <template v-else>
+                <div
+                  :class="{
+                    'focused-cell': isFocused(index, header.key),
+                    'editable-cell': mode === 'edit'
+                  }"
+                >
+                  {{ item[header.key] }}
+                </div>
+              </template>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </v-card>
+  </div>
 </template>
 
 <style scoped>
-.mt-4 {
-  margin-top: 16px;
+.editable-table .v-data-table__wrapper {
+  overflow-x: auto;
+  overflow-y: auto;
+}
+.focused-row {
+  background-color: #e0e0e0 !important;
+}
+.focused-cell {
+  outline: 2px solid #3f51b5;
+  padding: 8px;
+}
+.editable-cell {
+  cursor: pointer;
 }
 </style>
