@@ -9,7 +9,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 interface ProductionData {
   no: number;
   partNo: string;
-  JobNo: string;
+  jobNo: string;
   status: string;
   plan: number;
   actual: number;
@@ -57,10 +57,10 @@ const defaultColDef = {
 const colDefs = ref([
   { field: "no", flex: 1},
   { field: "partNo", filter: true, flex: 3 },
-  { field: "JobNo", filter: true, flex: 3 },
+  { field: "jobNo", filter: true, flex: 3 },
   { 
     field: "status",
-    editable: true,
+    editable: () => props.mode === 'edit',
     cellEditor: 'agSelectCellEditor',
     flex: 2,
     cellEditorParams: {
@@ -68,8 +68,8 @@ const colDefs = ref([
     },
   },
   { field: "plan", flex: 3 },
-  { field: "actual", editable: true, flex: 2 },
-  { field: "remarks", editable: true, flex: 4 },
+  { field: "actual", editable: () => props.mode === 'edit', flex: 2 },
+  { field: "remarks", editable: () => props.mode === 'edit', flex: 4 },
 ]);
 
 // Computed property untuk menentukan apakah mode view
@@ -81,27 +81,26 @@ const isViewMode = computed(() => props.mode === 'view');
     <v-card-title class="d-flex justify-space-between align-center">
         <span v-if="mode === 'edit'">Edit Production Sheet</span>
         <span v-else-if="mode === 'view'">View Production Sheet</span>
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          label="Search"
-          prepend-inner-icon="$magnify"
-          variant="outlined"
-          hide-details
-        ></v-text-field>
       </v-card-title>
     <!-- AG Grid dengan defaultColDef -->
     <AgGridVue
       :rowData="rowData"
       :columnDefs="colDefs"
       :defaultColDef="defaultColDef"
-      style="height: 500px;">
+      style="height: 500px; padding: 12px;">
     </AgGridVue>
   </v-card>
 </template>
 
-<style scoped>
+<style>
 .mt-4 {
   margin-top: 16px;
+}
+.ag-header-cell-label {
+  justify-content: center;
+}
+
+.v-dialog > .v-overlay__content > .v-card, .v-dialog > .v-overlay__content > form > .v-card {
+  color: black;
 }
 </style>

@@ -25,4 +25,7 @@ $routes->group('api', static function ($routes) {
     $routes->resource('partlists', [
         'controller' => 'PartListController'
     ]);
+    $routes->resource('customers', [
+        'controller' => 'CustomerController'
+    ]);
 });

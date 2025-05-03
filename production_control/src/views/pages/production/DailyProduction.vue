@@ -53,7 +53,7 @@ const viewag = () => {
     <v-col cols="12" md="12">
       <UiParentCard title="Welding Line Sub Assy ADM">
 
-        <v-row class="d-flex justify-space-between ga-4"
+        <v-row class="d-flex justify-center ga-4"
         >
             <v-card
                 max-width="350"
@@ -127,7 +127,7 @@ const viewag = () => {
     <v-col cols="12" md="12">
       <UiParentCard title="Welding Line WSS ADM">
 
-        <v-row class="d-flex justify-space-between ga-4"
+        <v-row class="d-flex justify-center ga-4"
         >
             <v-card
                 max-width="350"
@@ -176,7 +176,7 @@ const viewag = () => {
                 color="darkprimary"
             >
             <v-card-text class="d-flex justify-space-between align-center">
-                <h4 class="me-3">SWSS LINE C</h4>
+                <h4 class="me-3">WSS LINE C</h4>
                 <v-chip
                     prepend-icon="$eye"
                     @click="view"
@@ -196,7 +196,7 @@ const viewag = () => {
         <br>
         <br>
 
-        <v-row class="d-flex justify-space-between ga-4"
+        <v-row class="d-flex justify-center ga-4"
         >
             <v-card
                 max-width="350"
@@ -266,7 +266,7 @@ const viewag = () => {
       </UiParentCard>
       <UiParentCard title="Welding Line AG-GRID">
 
-<v-row class="d-flex justify-space-between ga-4"
+<v-row class="d-flex justify-center ga-4"
 >
     <v-card
         max-width="350"

@@ -17,7 +17,7 @@ interface ResponseBody {
 }
 
 function fakeBackend() {
-  const users: User[] = [{ id: 1, username: 'info@codedthemes.com', password: 'admin123', firstName: 'Codedthemes', lastName: '.com' }];
+  const users: User[] = [{ id: 1, username: 'info@codedthemes.com', password: 'admin123', firstName: 'Admin', lastName: '.com' }];
   const realFetch = window.fetch;
 
   window.fetch = function (url: string, opts: { method: string; headers: { [key: string]: string }; body?: string }) {
