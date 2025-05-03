@@ -5,9 +5,11 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import ProductionSheet from '@/views/forms/ProductionSheet.vue';
 import ProductionSheetAgGrid from '@/views/forms/ProductionSheetAgGrid.vue';
+import ProductionSheetAgGrid from '@/views/forms/ProductionSheetAgGrid.vue';
 
 
 const dialog = ref(false);
+const dialogag = ref(false);
 const dialogag = ref(false);
 const mode = ref<'edit' | 'view'>('view'); // Bisa diisi 'edit' atau 'view'
 
@@ -33,6 +35,16 @@ const edit = () => {
 const view = () => {
   mode.value = 'view';
   dialog.value = true;
+};
+
+const editag = () => {
+  mode.value = 'edit';
+  dialogag.value = true;
+};
+
+const viewag = () => {
+  mode.value = 'view';
+  dialogag.value = true;
 };
 
 const editag = () => {
