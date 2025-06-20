@@ -28,4 +28,13 @@ $routes->group('api', static function ($routes) {
     $routes->resource('customers', [
         'controller' => 'CustomerController'
     ]);
+    $routes->resource('machines', [
+        'controller' => 'MachineController'
+    ]);
+    $routes->resource('productionresult', [
+        'controller' => 'ProductionResultController'
+    ]);
+    $routes->resource('productionplanning', [
+        'controller' => 'ProductionPlanningController'
+    ]);
 });

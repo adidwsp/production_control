@@ -32,9 +32,24 @@ const MainRoutes = {
       component: () => import('@/views/tables/DataMachine.vue')
     },
     {
+      name: 'Planning Production',
+      path: '/planningproduction',
+      component: () => import('@/views/pages/production_control/ProductionPlanning.vue')
+    },
+    {
+      name: 'Monitoring Production',
+      path: '/monitoringproduction',
+      component: () => import('@/views/pages/production_control/MonitoringProduction.vue')
+    },
+    {
       name: 'Daily Production',
       path: '/dailyproduction',
       component: () => import('@/views/pages/production/DailyProduction.vue')
+    },
+    {
+      name: 'Production Result',
+      path: '/productionresult',
+      component: () => import('@/views/pages/production/ProductionResult.vue')
     },
     {
       name: 'Starter',

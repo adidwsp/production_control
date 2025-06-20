@@ -7,7 +7,7 @@
         <!-- Add Part Button -->
         <v-btn color="primary" @click="openDialog('create')">Add Part</v-btn>
         <v-btn icon @click="refreshData()" class="ml-4">
-          <v-icon>mdi-refresh</v-icon>
+          <v-icon icon="$refresh"></v-icon>
         </v-btn>
         <v-spacer />
         <v-spacer />
@@ -40,10 +40,10 @@
         </template>
         <template #item.actions="{ item }">
           <v-btn icon small @click="openDialog('edit', item)">
-            <v-icon>mdi-pencil</v-icon>
+            <v-icon icon="$pencil"></v-icon>
           </v-btn>
           <v-btn icon small @click="deleteItem(item.id)">
-            <v-icon color="red">mdi-delete</v-icon>
+            <v-icon color="red" icon="$delete"></v-icon>
           </v-btn>
         </template>
       </v-data-table>

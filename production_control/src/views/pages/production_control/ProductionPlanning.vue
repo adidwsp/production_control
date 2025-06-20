@@ -1,7 +1,7 @@
 <template>
   <v-card flat>
     <v-card-title>
-      Master Data
+      Production History
       <v-spacer />
       <v-sheet class="pl-2 pr-2 d-flex align-center" elevation="0" rounded>
         <!-- Add Part Button -->
@@ -21,8 +21,8 @@
     </v-sheet>
     </v-card-title>
 
-    <v-card-text style="overflow-x: auto;" max-width="auto">
-      <v-sheet border rounded style="min-width: max-content;">
+    <v-card-text style="overflow-x: auto;">
+      <v-sheet border rounded>
       <v-data-table
         :headers="headers"
         :items="allItems"
@@ -68,34 +68,20 @@
               :disabled="dialog.mode === 'edit'"
               required
             />
-            <v-text-field v-model="form.job_no" label="Job No" required />
-            <v-text-field v-model="form.part_name" label="Part Name" required />
+            <v-text-field v-model="form.shift" label="Shift" required />
             <v-text-field
-              v-model.number="form.pack_qty"
-              label="Pack Qty"
+              v-model.number="form.plan_date"
+              label="Plan Date"
+              type="date"
+              required
+            />
+            <v-text-field
+              v-model.number="form.plan_qty"
+              label="Plan Qty"
               type="number"
               required
             />
-            <v-text-field v-model="form.part_status" label="Status" required />
-            <v-text-field
-              v-model="form.routing_process"
-              label="Routing Process"
-              required
-            />
-            <v-text-field v-model="form.process" label="Process" required />
-            <v-text-field v-model="form.machine_id" label="Machine ID" required />
-            <v-text-field
-              v-model.number="form.uph"
-              label="UPH"
-              type="number"
-              required
-            />
-            <v-text-field v-model="form.model_id" label="Model ID" required />
-            <v-text-field
-              v-model="form.customer_id"
-              label="Customer ID"
-              required
-            />
+            
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -109,6 +95,14 @@
   </v-card>
 </template>
 
+
+<style scoped>
+/* Optional styling */
+.v-data-table-header {
+  width: inherit;
+}
+</style>
+
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue'
 import { useDataStore } from '@/stores/dataStore'
@@ -116,19 +110,10 @@ import { storeToRefs } from 'pinia'
 
 // Define Item interface
 type Item = {
-  part_no: string
-  job_no: string
-  part_name: string
-  pack_qty: number
-  part_status: string
-  routing_process: string
-  process: string
-  machine_id: string
-  uph: number
-  model_id: string
-  customer_id: string
-  created_at: string | null
-  updated_at: string | null
+  part_no: string,
+  shift: number,
+  production_qty: number,
+  problem: string,
 }
 
 // Store
@@ -142,31 +127,17 @@ const isValid = ref(false)
 const formRef = ref()
 const form = reactive<Omit<Item, 'created_at' | 'updated_at'>>({
   part_no: '',
-  job_no: '',
-  part_name: '',
-  pack_qty: 0,
-  part_status: '',
-  routing_process: '',
-  process: '',
-  machine_id: '',
-  uph: 0,
-  model_id: '',
-  customer_id: '',
-})
+  shift: 0,
+  plan_qty: 0,
+  problem: '',
+  })
 
 // Table headers
 const headers = [
   { key: 'part_no', title: 'Part No', align: 'center' as const, sortable: true},
-  { key: 'job_no', title: 'Job No', align: 'center' as const, sortable: true },
-  { key: 'part_name', title: 'Part Name', align: 'center' as const, sortable: true },
-  { key: 'pack_qty', title: 'Pack Qty', align: 'center' as const, sortable: true },
-  { key: 'part_status', title: 'Status', align: 'center' as const, sortable: true },
-  { key: 'routing_process', title: 'Routing Process', align: 'center' as const, sortable: true },
-  { key: 'process', title: 'Process', align: 'center' as const, sortable: true },
-  { key: 'machine_id', title: 'Machine ID', align: 'center' as const, sortable: true },
-  { key: 'uph', title: 'UPH', align: 'end' as const, sortable: true },
-  { key: 'model_id', title: 'Model ID', align: 'center' as const, sortable: true },
-  { key: 'customer_id', title: 'Customer ID', align: 'center' as const, sortable: true },
+  { key: 'plan_date', title: 'Plan Date', align: 'center' as const, sortable: true },
+  { key: 'shift', title: 'Shift', align: 'center' as const, sortable: true },
+  { key: 'plan_qty', title: 'Plan Qty', align: 'center' as const, sortable: true },
   { key: 'created_at', title: 'Created At', align: 'center' as const, sortable: true },
   { key: 'updated_at', title: 'Updated At', align: 'center' as const, sortable: true },
   { key: 'actions', title: 'Actions', align: 'center' as const, sortable: false },
@@ -177,7 +148,7 @@ onMounted(() => refreshData())
 
 // Methods
 function refreshData() {
-  dataStore.fetchItems('partlists')
+  dataStore.fetchItems('productionplanning')
 }
 
 function openDialog(mode: 'create' | 'edit', item?: Item) {
@@ -200,9 +171,9 @@ function closeDialog() {
 async function saveItem() {
   try {
     if (dialog.mode === 'create') {
-      await dataStore.createItem('partlists', form)
+      await dataStore.createItem('productionplanning', form)
     } else {
-      await dataStore.updateItem(`partlists/${form.part_no}`, form)
+      await dataStore.updateItem(`productionplanning/${form.part_no}`, form)
     }
     closeDialog()
     refreshData()
@@ -214,7 +185,7 @@ async function saveItem() {
 async function deleteItem(partNo: string) {
   if (confirm(`Hapus part ${partNo}?`)) {
     try {
-      await dataStore.deleteItem(`partlists/${partNo}`)
+      await dataStore.deleteItem(`productionplanning/${partNo}`)
       refreshData()
     } catch (err) {
       console.error(err)
@@ -227,6 +198,3 @@ function formatDate(dateStr: string | null) {
 }
 </script>
 
-<style scoped>
-/* Optional styling */
-</style>

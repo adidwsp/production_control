@@ -53,12 +53,31 @@ const sidebarItem: menu[] = [
     to: '/datamachine'
   },
   { divider: true },
+
+  { header: 'Production Control' },
+  {
+    title: 'Planning Production',
+    icon: DashboardIcon,
+    to: '/planningproduction'
+  },
+  {
+    title: 'Monitoring Production',
+    icon: DashboardIcon,
+    to: '/monitoringproduction'
+  },
+
+  { divider: true },
   
   { header: 'Production' },
   {
     title: 'Daily Production',
     icon: DashboardIcon,
     to: '/dailyproduction'
+  },
+  {
+    title: 'Production Result',
+    icon: DashboardIcon,
+    to: '/productionresult'
   },
 
   { divider: true },

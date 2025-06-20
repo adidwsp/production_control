@@ -1,124 +1,191 @@
 <template>
-  <v-card
-    title="Data Machine"
-    flat
-  >
-    <template v-slot:text>
-      <v-text-field
-        v-model="search"
-        label="Search"
-        prepend-inner-icon="mdi-magnify"
-        variant="outlined"
-        hide-details
-        single-line
-      ></v-text-field>
-    </template>
+  <v-card flat>
+    <v-card-title>
+      Master Data
+      <v-spacer />
+      <v-sheet class="pl-2 pr-2 d-flex align-center" elevation="0" rounded>
+        <!-- Add Part Button -->
+        <v-btn color="primary" @click="openDialog('create')">Add Part</v-btn>
+        <v-btn icon @click="refreshData()" class="ml-4">
+          <v-icon icon="$refresh"></v-icon>
+        </v-btn>
+        <v-spacer />
+        <v-spacer />
+        <v-text-field
+          v-model="search"
+          label="Search"
+          variant="outlined"
+          hide-details
+          clearable
+        />
+    </v-sheet>
+    </v-card-title>
 
-    <v-data-table
-      :headers="headers"
-      :items="desserts"
-      :search="search"
-    ></v-data-table>
+    <v-card-text style="overflow-x: auto;">
+      <v-sheet border rounded>
+      <v-data-table
+        :headers="headers"
+        :items="allItems"
+        :search="search"
+        :loading="isLoading"
+        loading-text="Loading data..."
+        class="elevation-1"
+        :sort-by="[ { key: 'id', order: 'asc' } ]"
+      >
+        <template #item.created_at="{ item }">
+          {{ formatDate(item.created_at) }}
+        </template>
+        <template #item.updated_at="{ item }">
+          {{ formatDate(item.updated_at) }}
+        </template>
+        <template #item.actions="{ item }">
+          <v-btn icon small @click="openDialog('edit', item)">
+            <v-icon icon="$pencil"></v-icon>
+          </v-btn>
+          <v-btn icon small @click="deleteItem(item.id)">
+            <v-icon color="red" icon="$delete"></v-icon>
+          </v-btn>
+        </template>
+      </v-data-table>
+    </v-sheet>
+    </v-card-text>
+
+    <v-card-actions>
+      <v-alert v-if="errorMessage" type="error" dense>
+        {{ errorMessage }}
+      </v-alert>
+    </v-card-actions>
+
+    <!-- Dialog for Create/Edit -->
+    <v-dialog v-model="dialog.visible" max-width="600px">
+      <v-card>
+        <v-card-title>{{ dialog.mode === 'create' ? 'Add Part' : 'Edit Part' }}</v-card-title>
+        <v-card-text>
+          <v-form ref="formRef" v-model="isValid">
+            <v-text-field
+              v-model="form.id_machine"
+              label="Id"
+              required
+            />
+            <v-text-field
+              v-model="form.machine_name"
+              label="Machine Name"
+              required
+            />
+            <v-text-field
+              v-model.number="form.line_name"
+              label="Line Name"
+              required
+            />
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn text="true" @click="closeDialog()">Cancel</v-btn>
+          <v-btn color="primary" :disabled="!isValid" @click="saveItem()">
+            {{ dialog.mode === 'create' ? 'Create' : 'Update' }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
-<script setup>
-  import { ref } from 'vue'
 
-  const search = ref('')
-  const headers = [
-    {
-      align: 'start',
-      key: 'name',
-      sortable: false,
-      title: 'Dessert (100g serving)',
-    },
-    { key: 'calories', title: 'Calories' },
-    { key: 'fat', title: 'Fat (g)' },
-    { key: 'carbs', title: 'Carbs (g)' },
-    { key: 'protein', title: 'Protein (g)' },
-    { key: 'iron', title: 'Iron (%)' },
-  ]
-  const desserts = [
-    {
-      name: 'Frozen Yogurt',
-      calories: 159,
-      fat: 6,
-      carbs: 24,
-      protein: 4,
-      iron: 1,
-    },
-    {
-      name: 'Ice cream sandwich',
-      calories: 237,
-      fat: 9,
-      carbs: 37,
-      protein: 4.3,
-      iron: 1,
-    },
-    {
-      name: 'Eclair',
-      calories: 262,
-      fat: 16,
-      carbs: 23,
-      protein: 6,
-      iron: 7,
-    },
-    {
-      name: 'Cupcake',
-      calories: 305,
-      fat: 3.7,
-      carbs: 67,
-      protein: 4.3,
-      iron: 8,
-    },
-    {
-      name: 'Gingerbread',
-      calories: 356,
-      fat: 16,
-      carbs: 49,
-      protein: 3.9,
-      iron: 16,
-    },
-    {
-      name: 'Jelly bean',
-      calories: 375,
-      fat: 0,
-      carbs: 94,
-      protein: 0,
-      iron: 0,
-    },
-    {
-      name: 'Lollipop',
-      calories: 392,
-      fat: 0.2,
-      carbs: 98,
-      protein: 0,
-      iron: 2,
-    },
-    {
-      name: 'Honeycomb',
-      calories: 408,
-      fat: 3.2,
-      carbs: 87,
-      protein: 6.5,
-      iron: 45,
-    },
-    {
-      name: 'Donut',
-      calories: 452,
-      fat: 25,
-      carbs: 51,
-      protein: 4.9,
-      iron: 22,
-    },
-    {
-      name: 'KitKat',
-      calories: 518,
-      fat: 26,
-      carbs: 65,
-      protein: 7,
-      iron: 6,
-    },
-  ]
+<script setup lang="ts">
+import { ref, onMounted, reactive } from 'vue'
+import { useDataStore } from '@/stores/dataStore'
+import { storeToRefs } from 'pinia'
+
+// Define Item interface
+type Item = {
+  id: string
+  id_machine: string
+  machine_name: string
+  line_name: string
+  created_at: string | null
+  updated_at: string | null
+}
+
+// Store
+const dataStore = useDataStore()
+const { items: allItems, loading: isLoading, error: errorMessage } = storeToRefs(dataStore)
+
+// Search and dialog state
+const search = ref('')
+const dialog = reactive({ visible: false as boolean, mode: 'create' as 'create' | 'edit' })
+const isValid = ref(false)
+const formRef = ref()
+const form = reactive<Omit<Item, 'created_at' | 'updated_at'> & { id: string | null }>({
+  id: null,
+  id_machine: null,
+  machine_name: '',
+  line_name: '',
+})
+
+// Table headers
+const headers = [
+  { key: 'id_machine', title: 'Id', align: 'center' as const, sortable: true },
+  { key: 'machine_name', title: 'Machine Name', align: 'center' as const, sortable: true },
+  { key: 'line_name', title: 'Line Name', align: 'center' as const, sortable: true },
+  { key: 'created_at', title: 'Created At', align: 'center' as const, sortable: true },
+  { key: 'updated_at', title: 'Updated At', align: 'center' as const, sortable: true },
+  { key: 'actions', title: 'Actions', align: 'center' as const, sortable: false },
+]
+
+// Lifecycle
+onMounted(() => refreshData())
+
+// Methods
+function refreshData() {
+  dataStore.fetchItems('machines')
+}
+
+function openDialog(mode: 'create' | 'edit', item?: Item) {
+  dialog.mode = mode
+  if (mode === 'edit' && item) {
+    Object.assign(form, item)
+  } else {
+    Object.keys(form).forEach(k => {
+      // @ts-ignore
+      form[k] = typeof form[k] === 'number' ? 0 : ''
+    })
+  }
+  dialog.visible = true
+}
+
+function closeDialog() {
+  dialog.visible = false
+}
+
+async function saveItem() {
+  try {
+    if (dialog.mode === 'create') {
+      await dataStore.createItem('machines', form)
+    } else {
+      await dataStore.updateItem(`machines/${form.id}`, form)
+    }
+    closeDialog()
+    refreshData()
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+async function deleteItem(id: string) {
+  if (confirm(`Hapus part ${id}?`)) {
+    try {
+      await dataStore.deleteItem(`machines/${id}`)
+      refreshData()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+}
+
+function formatDate(dateStr: string | null) {
+  return dateStr ? new Date(dateStr).toLocaleString() : '-'
+}
 </script>
 
+<style scoped>
+/* Optional styling */
+</style>

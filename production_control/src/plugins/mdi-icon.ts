@@ -1,4 +1,4 @@
-import { mdiClose, mdiHome, mdiEyeOff, mdiEye, mdiMagnify, mdiAccount, mdiAccountCircleOutline, mdiRefresh } from '@mdi/js';
+import { mdiClose, mdiHome, mdiEyeOff, mdiEye, mdiMagnify, mdiAccount, mdiAccountCircleOutline, mdiRefresh, mdiPencil, mdiDelete } from '@mdi/js';
 
 export const icons = {
   close: mdiClose,
@@ -9,7 +9,8 @@ export const icons = {
   account: mdiAccount,
   accountCircleOutline: mdiAccountCircleOutline,
   refresh: mdiRefresh,
-  
+  pencil: mdiPencil,
+  delete: mdiDelete,
   
 };
 

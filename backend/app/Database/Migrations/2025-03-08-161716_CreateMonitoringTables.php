@@ -12,50 +12,29 @@ class CreateMonitoringTables extends Migration
          * TABEL: customers
          */
         $this->forge->addField([
-            'id' => [
-                'type'           => 'INT',
-                'auto_increment' => true
-            ],
-            'customer_name' => [
-                'type' => 'VARCHAR',
-                'constraint' => 100
-            ],
-            'plant' => [
-                'type' => 'VARCHAR',
-                'constraint' => 100,
-                'null' => true
-            ],
+            'id' => ['type' => 'INT', 'auto_increment' => true],
+            'id_customer' => ['type' => 'VARCHAR', 'constraint' => 20, 'unique' => true],
+            'customer_name' => ['type' => 'VARCHAR', 'constraint' => 100],
+            'plant' => ['type' => 'VARCHAR', 'constraint' => 100, 'null' => true],
             'created_at' => ['type' => 'DATETIME', 'null' => true],
             'updated_at' => ['type' => 'DATETIME', 'null' => true],
         ]);
-        $this->forge->addKey('id', true); // PRIMARY KEY
+        $this->forge->addKey('id', true);
         $this->forge->createTable('customers', true);
 
         /*
          * TABEL: models
          */
         $this->forge->addField([
-            'id' => [
-                'type'           => 'INT',
-                'auto_increment' => true
-            ],
-            'model_name' => [
-                'type' => 'VARCHAR',
-                'constraint' => 50
-            ],
-            'customer_id' => [
-                'type' => 'INT',
-                'null' => true
-            ],
-            'year_masspro' => [
-                'type' => 'INT',
-                'null' => true
-            ],
+            'id' => ['type' => 'INT', 'auto_increment' => true],
+            'id_model' => ['type' => 'VARCHAR', 'constraint' => 20, 'unique' => true],
+            'model_name' => ['type' => 'VARCHAR', 'constraint' => 50],
+            'customer_id' => ['type' => 'INT', 'null' => true],
+            'year_masspro' => ['type' => 'INT', 'null' => true],
             'created_at' => ['type' => 'DATETIME', 'null' => true],
             'updated_at' => ['type' => 'DATETIME', 'null' => true],
         ]);
         $this->forge->addKey('id', true);
-        // Kita akan tambahkan foreign key nanti setelah semua tabel dibuat
         $this->forge->createTable('models', true);
 
         /*
@@ -63,6 +42,7 @@ class CreateMonitoringTables extends Migration
          */
         $this->forge->addField([
             'id' => ['type' => 'INT', 'auto_increment' => true],
+            'id_machine' => ['type' => 'VARCHAR', 'constraint' => 20, 'unique' => true],
             'machine_name' => ['type' => 'VARCHAR', 'constraint' => 100],
             'line_name' => ['type' => 'VARCHAR', 'constraint' => 100, 'null' => true],
             'created_at' => ['type' => 'DATETIME', 'null' => true],
@@ -73,20 +53,14 @@ class CreateMonitoringTables extends Migration
 
         /*
          * TABEL: part_lists
-         * Menggunakan part_no sebagai PRIMARY KEY
          */
         $this->forge->addField([
-            'part_no' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 50
-            ],
+            'id' => ['type' => 'INT', 'auto_increment' => true],
+            'part_no' => ['type' => 'VARCHAR', 'constraint' => 50, 'unique' => true],
             'job_no' => ['type' => 'VARCHAR', 'constraint' => 50, 'null' => true],
             'part_name' => ['type' => 'VARCHAR', 'constraint' => 100, 'null' => true],
             'pack_qty' => ['type' => 'INT', 'null' => true],
-            'part_status' => [
-                'type' => "ENUM('rm','wip','fp')",
-                'null' => true
-            ],
+            'part_status' => ['type' => "ENUM('rm','wip','fp')", 'null' => true],
             'routing_process' => ['type' => 'VARCHAR', 'constraint' => 255, 'null' => true],
             'process' => ["type" => "ENUM('stamping','welding','others')", 'null' => true],
             'machine_id' => ['type' => 'INT', 'null' => true],
@@ -96,7 +70,7 @@ class CreateMonitoringTables extends Migration
             'created_at' => ['type' => 'DATETIME', 'null' => true],
             'updated_at' => ['type' => 'DATETIME', 'null' => true],
         ]);
-        $this->forge->addKey('part_no', true); // PRIMARY KEY
+        $this->forge->addKey('id', true);
         $this->forge->createTable('part_lists', true);
 
         /*
@@ -134,10 +108,7 @@ class CreateMonitoringTables extends Migration
             'id' => ['type' => 'INT', 'auto_increment' => true],
             'part_no' => ['type' => 'VARCHAR', 'constraint' => 50],
             'plan_date' => ['type' => 'DATE', 'null' => true],
-            'shift' => [
-                'type' => "ENUM('1','2','3')",
-                'null' => true
-            ],
+            'shift' => ['type' => "ENUM('1','2','3')", 'null' => true],
             'plan_qty' => ['type' => 'INT', 'null' => true],
             'created_at' => ['type' => 'DATETIME', 'null' => true],
             'updated_at' => ['type' => 'DATETIME', 'null' => true],
@@ -152,10 +123,7 @@ class CreateMonitoringTables extends Migration
             'id' => ['type' => 'INT', 'auto_increment' => true],
             'part_no' => ['type' => 'VARCHAR', 'constraint' => 50],
             'production_date' => ['type' => 'DATE', 'null' => true],
-            'shift' => [
-                'type' => "ENUM('1','2','3')",
-                'null' => true
-            ],
+            'shift' => ['type' => "ENUM('1','2','3')", 'null' => true],
             'production_qty' => ['type' => 'INT', 'null' => true],
             'problem' => ['type' => 'TEXT', 'null' => true],
             'created_at' => ['type' => 'DATETIME', 'null' => true],
@@ -165,7 +133,7 @@ class CreateMonitoringTables extends Migration
         $this->forge->createTable('production_actuals', true);
 
         /*
-         * TABEL: problems (opsional)
+         * TABEL: problems
          */
         $this->forge->addField([
             'id' => ['type' => 'INT', 'auto_increment' => true],
@@ -192,24 +160,17 @@ class CreateMonitoringTables extends Migration
         $this->forge->addKey('id', true);
         $this->forge->createTable('stocks', true);
 
-        /*
-         * Tambahkan Foreign Key (FK) setelah tabel dibuat
-         * (Karena di CI4, kita perlu definisikan di baris terpisah atau gunakan $this->forge->addForeignKey)
-         */
-
-        // menambahkan FK ke models.customer_id => customers.id
+        // Tambahkan FK
         $this->forge->addColumn('models', [
             'CONSTRAINT fk_models_customer_id FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL ON UPDATE CASCADE'
         ]);
 
-        // menambahkan FK part_lists -> machines, models, customers
         $this->forge->addColumn('part_lists', [
             'CONSTRAINT fk_part_lists_machine_id FOREIGN KEY (machine_id) REFERENCES machines(id) ON DELETE SET NULL ON UPDATE CASCADE',
             'CONSTRAINT fk_part_lists_model_id FOREIGN KEY (model_id) REFERENCES models(id) ON DELETE SET NULL ON UPDATE CASCADE',
             'CONSTRAINT fk_part_lists_customer_id FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL ON UPDATE CASCADE'
         ]);
 
-        // menambahkan FK ke part_no
         $this->forge->addColumn('forecasts', [
             'CONSTRAINT fk_forecasts_part_no FOREIGN KEY (part_no) REFERENCES part_lists(part_no) ON DELETE CASCADE ON UPDATE CASCADE'
         ]);
@@ -226,7 +187,6 @@ class CreateMonitoringTables extends Migration
             'CONSTRAINT fk_stocks_part_no FOREIGN KEY (part_no) REFERENCES part_lists(part_no) ON DELETE CASCADE ON UPDATE CASCADE'
         ]);
 
-        // menambahkan FK problems -> production_actuals
         $this->forge->addColumn('problems', [
             'CONSTRAINT fk_problems_prod_actual_id FOREIGN KEY (production_actual_id) REFERENCES production_actuals(id) ON DELETE CASCADE ON UPDATE CASCADE'
         ]);
@@ -234,7 +194,6 @@ class CreateMonitoringTables extends Migration
 
     public function down()
     {
-        // Urutan drop FK/tables kebalikan dari up()
         $this->forge->dropTable('problems', true);
         $this->forge->dropTable('production_actuals', true);
         $this->forge->dropTable('production_plans', true);
