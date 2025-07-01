@@ -42,6 +42,11 @@ const MainRoutes = {
       component: () => import('@/views/pages/production_control/MonitoringProduction.vue')
     },
     {
+      name: 'Monitoring Production AG-GRID',
+      path: '/monitoringproductionag',
+      component: () => import('@/views/pages/production_control/MonitoringProductionAg.vue')
+    },
+    {
       name: 'Daily Production',
       path: '/dailyproduction',
       component: () => import('@/views/pages/production/DailyProduction.vue')

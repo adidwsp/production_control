@@ -65,6 +65,11 @@ const sidebarItem: menu[] = [
     icon: DashboardIcon,
     to: '/monitoringproduction'
   },
+  {
+    title: 'Monitoring Production AG',
+    icon: DashboardIcon,
+    to: '/monitoringproductionag'
+  },
 
   { divider: true },
   
