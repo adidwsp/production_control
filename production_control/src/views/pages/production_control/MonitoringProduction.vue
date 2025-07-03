@@ -47,26 +47,28 @@
         </thead>
         <tbody>
           <template v-for="(row, idx) in filteredRows" :key="row.partNo">
+            <!-- DELIVERY -->
+            <tr>
+              <td :rowspan="4" >{{ idx + 1 }}</td>
+              <td :rowspan="4" >{{ row.partNo }}</td>
+              <td :rowspan="4" >{{ row.jobNo }}</td>
+              <td :rowspan="4" >{{ row.model }}</td>
+              <td :rowspan="4" >{{ row.line }}</td>
+              <td>DLV.</td>
+              <template v-for="date in dates" :key="row.partNo + date + '-dlv'">
+                <td>{{ row.data[date]?.D.dlv ?? '-' }}</td>
+                <td>{{ row.data[date]?.N.dlv ?? '-' }}</td>
+              </template>
+              <td>{{ totalDlv(row) }}</td>
+            </tr>
             <!-- PLAN -->
             <tr>
-              <td :rowspan="3" >{{ idx + 1 }}</td>
-              <td :rowspan="3" >{{ row.partNo }}</td>
-              <td :rowspan="3" >{{ row.jobNo }}</td>
-              <td :rowspan="3" >{{ row.model }}</td>
-              <td :rowspan="3" >{{ row.line }}</td>
               <td >PLAN</td>
               <template v-for="date in dates" :key="row.partNo + date + '-plan'">
                 <td>{{ row.data[date]?.D.plan ?? '-' }}</td>
                 <td>{{ row.data[date]?.N.plan ?? '-' }}</td>
               </template>
               <td>{{ totalPlan(row) }}</td>
-              <!-- <td :rowspan="3">
-                <div>
-                  PL: {{ totalPlan(row) }}<br />
-                  AC: {{ totalAct(row) }}<br />
-                  {{ totalPct(row) }}
-                </div>
-              </td> -->
             </tr>
             <!-- ACTUAL -->
             <tr>
@@ -123,8 +125,8 @@ const rows = ref([
     model:  'SU2ID',
     line:   'SA HMMI',
     data: {
-      '01/07/25': { D: { plan: 100, act: 100 }, N: { plan: 100, act: 80  }},
-      '02/07/25':  { D: { plan: 120, act:   0 }, N: { plan: 120, act:   0 }},
+      '01/07/25': { D: { dlv: 100, plan: 100, act: 100 }, N: { dlv: 100, plan: 100, act: 80  }},
+      '02/07/25':  { D: { dlv: 100, plan: 120, act:   0 }, N: { dlv: 100, plan: 120, act:   0 }},
       // … dst
     },
     totalPlan:   1080,
@@ -136,8 +138,8 @@ const rows = ref([
     model:  'SU2ID',
     line:   'SA HMMI',
     data: {
-      '01/07/25': { D: { plan:   100, act:   100 }, N: { plan:   100, act: 20  }},
-      '02/07/25':  { D: { plan:   100, act:   100 }, N: { plan:   100, act:   100 }},
+      '01/07/25': { D: { dlv: 100, plan:   100, act:   100 }, N: { dlv: 100, plan:   100, act: 20  }},
+      '02/07/25':  { D: { dlv: 100, plan:   100, act:   100 }, N: { dlv: 100, plan:   100, act:   100 }},
       // … dst
     },
     totalPlan:   60,
@@ -149,8 +151,8 @@ const rows = ref([
     model:  'SU2ID',
     line:   'SA HMMI',
     data: {
-      '01/07/25': { D: { plan: 140, act: 140 }, N: { plan: 140, act: 120 }},
-      '02/07/25':  { D: { plan: 120, act: 120 }, N: { plan: 120, act:  0 }},
+      '01/07/25': { D: { dlv: 100, plan: 140, act: 140 }, N: { dlv: 100, plan: 140, act: 120 }},
+      '02/07/25':  { D: { dlv: 100, plan: 120, act: 120 }, N: { dlv: 100, plan: 120, act:  0 }},
       // … dst
     },
     totalPlan:   1260,
@@ -162,8 +164,8 @@ const rows = ref([
     model:  'SU2ID',
     line:   'SA HMMI',
     data: {
-      '01/07/25': { D: { plan: 140, act: 140 }, N: { plan: 140, act: 120 }},
-      '02/07/25':  { D: { plan: 120, act: 120 }, N: { plan: 120, act:  0 }},
+      '01/07/25': { D: { dlv: 100, plan: 140, act: 140 }, N: { dlv: 100, plan: 140, act: 120 }},
+      '02/07/25':  { D: { dlv: 100, plan: 120, act: 120 }, N: { dlv: 100, plan: 120, act:  0 }},
       // … dst
     },
     totalPlan:   1260,
@@ -187,6 +189,12 @@ function pct(cell) {
 }
 
 // Total calculations
+function totalDlv(row) {
+  return dates.value.reduce(
+    (sum, d) => sum + (row.data[d]?.D.dlv || 0) + (row.data[d]?.N.dlv || 0),
+    0
+  )
+}
 function totalPlan(row) {
   return dates.value.reduce(
     (sum, d) => sum + (row.data[d]?.D.plan || 0) + (row.data[d]?.N.plan || 0),
@@ -227,25 +235,4 @@ function clearFilter() {
   text-align: center;
   background: #fff;
 }
-/* Sticky header rows */
-.my-table th {
-  position: sticky;
-  top: 0;
-  background: #f9f9f9;
-  z-index: 2;
-}
-/* Freeze static columns */
-.sticky-col {
-  position: sticky;
-  left: 0;
-  z-index: 3;
-  background: #fff;
-}
-/* Adjust left offsets for each static column */
-.col-no { left: 0; }
-.col-part { left: 40px; }
-.col-job { left: 140px; }
-.col-model { left: 260px; }
-.col-line { left: 340px; }
-.col-desc { left: 420px; }
 </style>
