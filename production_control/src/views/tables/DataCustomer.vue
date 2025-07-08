@@ -66,12 +66,14 @@
               v-model="form.customer_name"
               label="Customer Name"
               required
-            />
+              variant="outlined"
+            /><br />
             <v-text-field
               v-model.number="form.plant"
               label="Plant"
               required
-            />
+              variant="outlined"
+            /><br />
           </v-form>
         </v-card-text>
         <v-card-actions>

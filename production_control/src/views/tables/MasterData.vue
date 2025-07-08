@@ -66,36 +66,59 @@
               v-model="form.part_no"
               label="Part No"
               :disabled="dialog.mode === 'edit'"
+              variant="outlined"
+              hide-details
               required
             />
-            <v-text-field v-model="form.job_no" label="Job No" required />
-            <v-text-field v-model="form.part_name" label="Part Name" required />
+            <br />
+            <v-text-field v-model="form.job_no" label="Job No" required
+              variant="outlined"
+              hide-details /><br />
+            <v-text-field v-model="form.part_name" label="Part Name" required
+              variant="outlined"
+              hide-details /><br />
             <v-text-field
               v-model.number="form.pack_qty"
               label="Pack Qty"
               type="number"
+              variant="outlined"
+              hide-details              
               required
-            />
-            <v-text-field v-model="form.part_status" label="Status" required />
+            /><br />
+            <v-text-field v-model="form.part_status" label="Status" required 
+              variant="outlined"
+              hide-details/><br />
             <v-text-field
               v-model="form.routing_process"
               label="Routing Process"
               required
-            />
-            <v-text-field v-model="form.process" label="Process" required />
-            <v-text-field v-model="form.machine_id" label="Machine ID" required />
+              variant="outlined"
+              hide-details
+            /><br />
+            <v-text-field v-model="form.process" label="Process" required 
+              variant="outlined"
+              hide-details/><br />
+            <v-text-field v-model="form.machine_id" label="Machine ID" required 
+              variant="outlined"
+              hide-details/><br />
             <v-text-field
               v-model.number="form.uph"
               label="UPH"
               type="number"
               required
-            />
-            <v-text-field v-model="form.model_id" label="Model ID" required />
+              variant="outlined"
+              hide-details
+            /><br />
+            <v-text-field v-model="form.model_id" label="Model ID" required 
+              variant="outlined"
+              hide-details/><br />
             <v-text-field
               v-model="form.customer_id"
               label="Customer ID"
               required
-            />
+              variant="outlined"
+              hide-details
+            /><br />
           </v-form>
         </v-card-text>
         <v-card-actions>

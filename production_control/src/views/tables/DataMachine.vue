@@ -66,17 +66,20 @@
               v-model="form.id_machine"
               label="Id"
               required
-            />
+              variant="outlined"
+            /><br />
             <v-text-field
               v-model="form.machine_name"
               label="Machine Name"
               required
-            />
+              variant="outlined"
+            /><br />
             <v-text-field
               v-model.number="form.line_name"
               label="Line Name"
               required
-            />
+              variant="outlined"
+            /><br />
           </v-form>
         </v-card-text>
         <v-card-actions>

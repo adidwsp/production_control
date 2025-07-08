@@ -17,6 +17,11 @@ const MainRoutes = {
       component: () => import('@/views/dashboards/default/DefaultDashboard.vue')
     },
     {
+      name: 'Stock Report',
+      path: '/report/stock',
+      component: () => import('@/views/pages/report/StockLevelReport.vue')
+    },
+    {
       name: 'Master Data',
       path: '/masterdata',
       component: () => import('@/views/tables/MasterData.vue')
@@ -30,6 +35,11 @@ const MainRoutes = {
       name: 'Data Machine',
       path: '/datamachine',
       component: () => import('@/views/tables/DataMachine.vue')
+    },
+    {
+      name: 'Delivery Order',
+      path: '/deliveryorder',
+      component: () => import('@/views/pages/production_control/DeliveryOrder.vue')
     },
     {
       name: 'Planning Production',

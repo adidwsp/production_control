@@ -98,6 +98,12 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useDataStore } from '@/stores/dataStore'
+import { storeToRefs } from 'pinia'
+
+
+
+
 
 // Search
 const search = ref('')

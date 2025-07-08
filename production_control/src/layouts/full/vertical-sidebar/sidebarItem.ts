@@ -34,6 +34,11 @@ const sidebarItem: menu[] = [
     icon: DashboardIcon,
     to: '/dashboard/default'
   },
+  {
+    title: 'Stock Level Report',
+    icon: PaletteIcon,
+    to: '/report/stock'
+  },
   { divider: true },
   
   { header: 'Master Data' },

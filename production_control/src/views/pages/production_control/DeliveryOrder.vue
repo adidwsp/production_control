@@ -67,24 +67,20 @@
               label="Part No"
               :disabled="dialog.mode === 'edit'"
               required
-              variant="outlined"
-            /><br />
-            <v-text-field v-model="form.shift" label="Shift" required 
-              variant="outlined"/><br />
+            />
+            <v-text-field v-model="form.shift" label="Shift" required />
             <v-text-field
-              v-model="form.plan_date"
+              v-model.number="form.plan_date"
               label="Plan Date"
               type="date"
               required
-              variant="outlined"
-            /><br />
+            />
             <v-text-field
               v-model.number="form.plan_qty"
               label="Plan Qty"
               type="number"
               required
-              variant="outlined"
-            /><br />
+            />
             
           </v-form>
         </v-card-text>
@@ -116,8 +112,7 @@ import { storeToRefs } from 'pinia'
 type Item = {
   part_no: string,
   shift: number,
-  plan_qty: number,
-  plan_date: string | null,
+  production_qty: number,
   problem: string,
 }
 
@@ -134,7 +129,6 @@ const form = reactive<Omit<Item, 'created_at' | 'updated_at'>>({
   part_no: '',
   shift: 0,
   plan_qty: 0,
-  plan_date: null,
   problem: '',
   })
 

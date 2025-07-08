@@ -37,4 +37,7 @@ $routes->group('api', static function ($routes) {
     $routes->resource('productionplanning', [
         'controller' => 'ProductionPlanningController'
     ]);
+    $routes->resource('deliveryorder', [
+        'controller' => 'DeliveryOrderController'
+    ]);
 });
